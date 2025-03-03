@@ -1,0 +1,157 @@
+{% extends "layout.html" %}
+
+{% block title %}Formulaire d'inscription{% endblock %}
+
+{% block header %}Formulaire d'inscription{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <i class="fas fa-user-plus fa-3x" style="color: var(--primary-color); margin-bottom: 20px;"></i>
+        <h2>Nouvel inscrit</h2>
+        <p>Veuillez remplir tous les champs ci-dessous</p>
+    </div>
+
+    <form id="inscription-form" action="{{ url_for('formulaire') }}" method="POST" novalidate>
+        <div class="form-group">
+            <label for="nom_complet">Nom complet <span class="required">*</span></label>
+            <input type="text" id="nom_complet" name="nom_complet" value="{{ nom_complet|default('') }}" required placeholder="Ex: Jean Dupont">
+            <div class="error-message" id="nom_complet-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="ville">Ville <span class="required">*</span></label>
+            <input type="text" id="ville" name="ville" value="{{ ville|default('') }}" required placeholder="Ex: Paris">
+            <div class="error-message" id="ville-error"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input type="email" id="email" name="email" value="{{ email|default('') }}" required placeholder="Ex: jean.dupont@example.com">
+            <div class="error-message" id="email-error"></div>
+        </div>
+
+        <div class="button-container">
+            <button type="submit" class="btn primary-btn">
+                <i class="fas fa-save" style="margin-right: 8px;"></i> Enregistrer
+            </button>
+            <a href="{{ url_for('index') }}" class="btn secondary-btn">
+                <i class="fas fa-times" style="margin-right: 8px;"></i> Annuler
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation des éléments du formulaire
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+        group.style.opacity = '0';
+        group.style.transform = 'translateX(-20px)';
+        group.style.transition = 'all 0.4s ease-out';
+
+        setTimeout(() => {
+            group.style.opacity = '1';
+            group.style.transform = 'translateX(0)';
+        }, 300 + (index * 150));
+    });
+
+    // Animation des boutons
+    const buttons = document.querySelectorAll('.button-container .btn');
+    buttons.forEach((button, index) => {
+        button.style.opacity = '0';
+        button.style.transform = 'translateY(10px)';
+        button.style.transition = 'all 0.5s ease-out';
+
+        setTimeout(() => {
+            button.style.opacity = '1';
+            button.style.transform = 'translateY(0)';
+        }, 800 + (index * 100));
+    });
+
+    // Validation du formulaire
+    const form = document.getElementById('inscription-form');
+
+    form.addEventListener('submit', function(event) {
+        let isValid = true;
+
+        // Validation du nom complet
+        const nomComplet = document.getElementById('nom_complet');
+        const nomCompletError = document.getElementById('nom_complet-error');
+        if (!nomComplet.value.trim()) {
+            nomCompletError.textContent = 'Le nom complet est obligatoire';
+            nomComplet.classList.add('invalid');
+            isValid = false;
+        } else {
+            nomCompletError.textContent = '';
+            nomComplet.classList.remove('invalid');
+        }
+
+        // Validation de la ville
+        const ville = document.getElementById('ville');
+        const villeError = document.getElementById('ville-error');
+        if (!ville.value.trim()) {
+            villeError.textContent = 'La ville est obligatoire';
+            ville.classList.add('invalid');
+            isValid = false;
+        } else {
+            villeError.textContent = '';
+            ville.classList.remove('invalid');
+        }
+
+        // Validation de l'email
+        const email = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!email.value.trim()) {
+            emailError.textContent = 'L\'adresse email est obligatoire';
+            email.classList.add('invalid');
+            isValid = false;
+        } else if (!emailPattern.test(email.value.trim())) {
+            emailError.textContent = 'L\'adresse email n\'est pas valide';
+            email.classList.add('invalid');
+            isValid = false;
+        } else {
+            emailError.textContent = '';
+            email.classList.remove('invalid');
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+
+            // Animation des champs invalides
+            const invalidInputs = document.querySelectorAll('.invalid');
+            invalidInputs.forEach(input => {
+                input.classList.add('shake');
+                setTimeout(() => {
+                    input.classList.remove('shake');
+                }, 500);
+            });
+        } else {
+            // Animation de soumission
+            const formContainer = document.querySelector('.form-container');
+            formContainer.style.transition = 'transform 0.5s, opacity 0.5s';
+            formContainer.style.transform = 'scale(0.95)';
+            formContainer.style.opacity = '0.8';
+        }
+    });
+
+    // Animation de focus sur les champs
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transition = 'transform 0.3s';
+            this.parentElement.style.transform = 'translateX(5px)';
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateX(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

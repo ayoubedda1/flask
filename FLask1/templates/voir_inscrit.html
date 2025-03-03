@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block title %}Détails de l'inscrit - {{ inscrit.nom_complet }}{% endblock %}
+
+{% block header %}Détails de l'inscrit{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="user-info">
+        <h2>{{ inscrit.nom_complet }}</h2>
+
+        <div class="info-group">
+            <label>Identifiant :</label>
+            <p>{{ inscrit.id }}</p>
+        </div>
+
+        <div class="info-group">
+            <label>Nom complet :</label>
+            <p>{{ inscrit.nom_complet }}</p>
+        </div>
+
+        <div class="info-group">
+            <label>Ville :</label>
+            <p>{{ inscrit.ville }}</p>
+        </div>
+
+        <div class="info-group">
+            <label>Email :</label>
+            <p>{{ inscrit.email }}</p>
+        </div>
+
+        <div class="info-group">
+            <label>Date d'inscription :</label>
+            <p>{{ inscrit.date_inscription.strftime('%d/%m/%Y à %H:%M:%S') }}</p>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <a href="{{ url_for('inscrits') }}" class="btn secondary-btn">Retour à la liste</a>
+        <a href="#" onclick="confirmDelete({{ inscrit.id }})" class="btn danger-btn">Supprimer</a>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Confirmation de suppression</h3>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p>Êtes-vous sûr de vouloir supprimer cet inscrit ? Cette action est irréversible.</p>
+            <div class="button-container">
+                <a href="{{ url_for('supprimer_inscrit', id=inscrit.id) }}" class="btn danger-btn">Supprimer</a>
+                <button onclick="closeModal()" class="btn secondary-btn">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmDelete(id) {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('active');
+    }
+
+    // Animation des éléments
+    document.addEventListener('DOMContentLoaded', function() {
+        const infoGroups = document.querySelectorAll('.info-group');
+        infoGroups.forEach((group, index) => {
+            group.style.animationDelay = `${0.1 * index}s`;
+            group.style.animation = 'fadeInUp 0.5s ease-out forwards';
+            group.style.opacity = '0';
+        });
+    });
+</script>
+{% endblock %}

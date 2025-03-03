@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}Confirmation d'inscription{% endblock %}
+
+{% block header %}Inscription réussie !{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="success-message">
+        <div class="success-icon">✓</div>
+        <p>Votre inscription a été enregistrée avec succès.</p>
+    </div>
+    
+    <div class="user-info">
+        <h2>Récapitulatif des informations</h2>
+        <div class="info-group">
+            <label><i class="fas fa-user" style="margin-right: 8px;"></i> Nom complet :</label>
+            <p>{{ nom_complet }}</p>
+        </div>
+        <div class="info-group">
+            <label><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> Ville :</label>
+            <p>{{ ville }}</p>
+        </div>
+        <div class="info-group">
+            <label><i class="fas fa-envelope" style="margin-right: 8px;"></i> Email :</label>
+            <p>{{ email }}</p>
+        </div>
+        <div class="info-group">
+            <label><i class="fas fa-calendar-alt" style="margin-right: 8px;"></i> Date d'inscription :</label>
+            <p>{{ now().strftime('%d/%m/%Y à %H:%M') }}</p>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <a href="{{ url_for('index') }}" class="btn secondary-btn">
+            <i class="fas fa-home" style="margin-right: 8px;"></i> Retour à l'accueil
+        </a>
+        <a href="{{ url_for('formulaire') }}" class="btn primary-btn">
+            <i class="fas fa-plus" style="margin-right: 8px;"></i> Nouvelle inscription
+        </a>
+        <a href="{{ url_for('inscrits') }}" class="btn primary-btn">
+            <i class="fas fa-list" style="margin-right: 8px;"></i> Voir tous les inscrits
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation de l'icône de succès
+        const successIcon = document.querySelector('.success-icon');
+        successIcon.style.transform = 'scale(0)';
+        successIcon.style.transition = 'transform 0.5s ease-out';
+
+        setTimeout(() => {
+            successIcon.style.transform = 'scale(1)';
+        }, 300);
+
+        // Animation des informations
+        const infoGroups = document.querySelectorAll('.info-group');
+        infoGroups.forEach((group, index) => {
+            group.style.opacity = '0';
+            group.style.transform = 'translateY(20px)';
+            group.style.transition = 'all 0.4s ease-out';
+
+            setTimeout(() => {
+                group.style.opacity = '1';
+                group.style.transform = 'translateY(0)';
+            }, 600 + (index * 150));
+        });
+
+        // Animation des boutons
+        const buttons = document.querySelectorAll('.button-container .btn');
+        buttons.forEach((button, index) => {
+            button.style.opacity = '0';
+            button.style.transform = 'translateY(10px)';
+            button.style.transition = 'all 0.5s ease-out';
+
+            setTimeout(() => {
+                button.style.opacity = '1';
+                button.style.transform = 'translateY(0)';
+            }, 1200 + (index * 100));
+        });
+
+        // Animation du conteneur de confirmation
+        const container = document.querySelector('.confirmation-container');
+        container.style.transform = 'scale(0.9)';
+        container.style.opacity = '0';
+        container.style.transition = 'all 0.6s ease-out';
+
+        setTimeout(() => {
+            container.style.transform = 'scale(1)';
+            container.style.opacity = '1';
+        }, 100);
+    });
+</script>
+{% endblock %}

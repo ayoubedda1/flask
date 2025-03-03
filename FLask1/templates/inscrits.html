@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+
+{% block title %}Liste des inscrits{% endblock %}
+
+{% block header %}Liste des personnes inscrites{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div class="table-header">
+        <h2>Tous les inscrits</h2>
+        <div class="button-container">
+            <a href="{{ url_for('formulaire') }}" class="btn primary-btn">Ajouter un inscrit</a>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <form action="{{ url_for('inscrits') }}" method="GET">
+            <div class="search-group">
+                <input type="text" name="search" id="search" class="search-input" placeholder="Rechercher par nom ou ville..." value="{{ search_query }}">
+                <button type="submit" class="search-btn">🔍</button>
+            </div>
+        </form>
+    </div>
+
+    {% if inscrits %}
+        <table class="inscriptions-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom complet</th>
+                    <th>Ville</th>
+                    <th>Email</th>
+                    <th>Date d'inscription</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscrit in inscrits %}
+                <tr>
+                    <td>{{ inscrit.id }}</td>
+                    <td>{{ inscrit.nom_complet }}</td>
+                    <td>{{ inscrit.ville }}</td>
+                    <td>{{ inscrit.email }}</td>
+                    <td class="date">{{ inscrit.date_inscription.strftime('%d/%m/%Y à %H:%M') }}</td>
+                    <td class="action-icons">
+                        <a href="{{ url_for('voir_inscrit', id=inscrit.id) }}" title="Voir les détails">👁️</a>
+                        <a href="#" onclick="confirmDelete({{ inscrit.id }})" title="Supprimer">🗑️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <ul class="pagination">
+            {% if page > 1 %}
+                <li><a href="{{ url_for('inscrits', page=page-1, search=search_query) }}">Précédent</a></li>
+            {% endif %}
+
+            {% for p in range(1, total_pages + 1) %}
+                <li><a href="{{ url_for('inscrits', page=p, search=search_query) }}" {% if p == page %}class="active"{% endif %}>{{ p }}</a></li>
+            {% endfor %}
+
+            {% if page < total_pages %}
+                <li><a href="{{ url_for('inscrits', page=page+1, search=search_query) }}">Suivant</a></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    {% else %}
+        <div class="message warning">
+            Aucun inscrit trouvé. {% if search_query %}Veuillez essayer avec d'autres critères de recherche.{% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Confirmation de suppression</h3>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p>Êtes-vous sûr de vouloir supprimer cet inscrit ? Cette action est irréversible.</p>
+            <div class="button-container">
+                <a href="#" id="confirmDeleteBtn" class="btn danger-btn">Supprimer</a>
+                <button onclick="closeModal()" class="btn secondary-btn">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function confirmDelete(id) {
+        const modal = document.getElementById('deleteModal');
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        confirmBtn.href = "{{ url_for('supprimer_inscrit', id=0) }}".replace('0', id);
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('active');
+    }
+
+    // Animation des entrées du tableau
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('.inscriptions-table tbody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${0.1 * index}s`;
+        });
+    });
+</script>
+{% endblock %}

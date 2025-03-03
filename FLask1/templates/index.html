@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}Accueil - Formulaire d'inscription{% endblock %}
+
+{% block header %}Bienvenue sur notre site{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <div class="welcome-icon">
+        <i class="fas fa-clipboard-list fa-4x" style="color: var(--primary-color);"></i>
+    </div>
+
+    <h2>Système de gestion des inscriptions</h2>
+
+    <p>Bienvenue sur notre application de gestion des inscriptions ! Ce système vous permet de :</p>
+
+    <ul style="text-align: left; margin: 20px 0; list-style-type: none;">
+        <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i> Enregistrer facilement de nouvelles inscriptions</li>
+        <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i> Visualiser toutes les personnes inscrites</li>
+        <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i> Rechercher des inscrits par nom ou ville</li>
+        <li><i class="fas fa-check-circle" style="color: var(--primary-color); margin-right: 10px;"></i> Gérer votre base de données d'inscrits</li>
+    </ul>
+
+    <p>Pour commencer, veuillez choisir une option ci-dessous :</p>
+
+    <div class="button-container">
+        <a href="{{ url_for('formulaire') }}" class="btn primary-btn">
+            <i class="fas fa-user-plus" style="margin-right: 8px;"></i> Nouvelle inscription
+        </a>
+        <a href="{{ url_for('inscrits') }}" class="btn secondary-btn">
+            <i class="fas fa-list" style="margin-right: 8px;"></i> Voir tous les inscrits
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation de l'icône
+        const icon = document.querySelector('.welcome-icon');
+        icon.style.opacity = '0';
+        icon.style.transform = 'translateY(-20px)';
+        icon.style.transition = 'all 0.8s ease-out';
+
+        setTimeout(() => {
+            icon.style.opacity = '1';
+            icon.style.transform = 'translateY(0)';
+        }, 300);
+
+        // Animation de la liste
+        const items = document.querySelectorAll('ul li');
+        items.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            item.style.transition = 'all 0.4s ease-out';
+
+            setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 500 + (index * 200));
+        });
+
+        // Animation des boutons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach((button, index) => {
+            button.style.opacity = '0';
+            button.style.transform = 'scale(0.8)';
+            button.style.transition = 'all 0.5s ease-out';
+
+            setTimeout(() => {
+                button.style.opacity = '1';
+                button.style.transform = 'scale(1)';
+            }, 1200 + (index * 200));
+        });
+    });
+</script>
+{% endblock %}
